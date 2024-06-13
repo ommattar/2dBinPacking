@@ -6,7 +6,7 @@ import java.util.List;
 
 public class BinPacking {
     public static void main(String[] args) {
-        List<Item> data = solutionZero(1);
+        List<Item> data = solutionZero(13);
         List<Bin> bins = new ArrayList<>();
 
         // Solution ZERO : 1 Bin - 1 Item
