@@ -5,41 +5,59 @@ public class Bin {
     private double width;
     private double length;
     private List<Item> items;
-    private List<SubBin> subBins;
 
     public Bin(double width, double length) {
         this.width = width;
         this.length = length;
         this.items = new ArrayList<>();
-        this.subBins = new ArrayList<>();
-        subBins.add(new SubBin(0, 0, width, length));
     }
 
+    public Bin(double width, double length, List<Item> items) {
+        this.width = width;
+        this.length = length;
+        this.items = new ArrayList<>();
+    }
+
+    // Check if an item can fit in the bin
+    public boolean canFit(Item item) {
+        double maxX = 0;
+        double maxY = 0;
+
+        for (Item existingItem : items) {
+            maxX = Math.max(maxX, existingItem.getX() + existingItem.getWidth());
+            maxY = Math.max(maxY, existingItem.getY() + existingItem.getLength());
+        }
+
+        // Check if the item can fit to the right of the bounding box or below the bounding box
+        return maxX + item.getWidth() <= this.width || maxY + item.getLength() <= this.length;
+    }
+
+    // Add an item to the bin
     public boolean addItem(Item item) {
-        for (SubBin subBin : subBins) {
-            if (subBin.canFitItem(item)) {
-                item.setPosition(subBin.getX(), subBin.getY());
-                items.add(item);
-                subBins.remove(subBin);
-                splitSubBins(subBin, item);
-                return true;
+        if (canFit(item)) {
+            // Set the item's position
+            // For simplicity, we'll place the item at the top left corner if it fits there
+            // Otherwise, we'll place it below the existing items
+            double maxX = 0;
+            double maxY = 0;
+
+            for (Item existingItem : items) {
+                maxX = Math.max(maxX, existingItem.getX() + existingItem.getWidth());
+                maxY = Math.max(maxY, existingItem.getY() + existingItem.getLength());
             }
-        }
-        return false;
-    }
 
-    private void splitSubBins(SubBin subBin, Item item) {
-        double itemRight = subBin.getX() + item.getWidth();
-        double itemTop = subBin.getY() + item.getLength();
-        double subBinRight = subBin.getX() + subBin.getWidth();
-        double subBinTop = subBin.getY() + subBin.getLength();
+            if (maxX + item.getWidth() <= this.width) {
+                item.setPosition(maxX, 0);
+            } else {
+                item.setPosition(0, maxY);
+            }
 
-        // Create new sub-bins for the remaining spaces
-        if (itemRight < subBinRight) {
-            subBins.add(new SubBin(itemRight, subBin.getY(), subBinRight - itemRight, subBin.getLength()));
-        }
-        if (itemTop < subBinTop) {
-            subBins.add(new SubBin(subBin.getX(), itemTop, subBin.getWidth(), subBinTop - itemTop));
+            // Add the item to the bin
+            this.items.add(item);
+
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -54,39 +72,5 @@ public class Bin {
 
     public List<Item> getItems() {
         return items;
-    }
-
-    private class SubBin {
-        private double x;
-        private double y;
-        private double width;
-        private double length;
-
-        public SubBin(double x, double y, double width, double length) {
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.length = length;
-        }
-
-        public boolean canFitItem(Item item) {
-            return item.getWidth() <= width && item.getLength() <= length;
-        }
-
-        public double getX() {
-            return x;
-        }
-
-        public double getY() {
-            return y;
-        }
-
-        public double getWidth() {
-            return width;
-        }
-
-        public double getLength() {
-            return length;
-        }
     }
 }
