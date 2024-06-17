@@ -34,6 +34,10 @@ public class SimulatedAnnealing {
         for (int i = 0; i < NbChangeTemp; i++) {
             for (int j = 0; j < NbIterationInTemp; j++) {
                 List<List<Bin>> neighborhoodSolutions = neighborhood.getNeighborhood(currentSolution);
+
+                if (neighborhoodSolutions.size() == 0) {
+                    break;
+                }
                 List<Bin> candidateSolution = neighborhoodSolutions.get(new Random().nextInt(neighborhoodSolutions.size()));
                 double candidateScore = fitnessFunction.calculateFitness(candidateSolution);
 

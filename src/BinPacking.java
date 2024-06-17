@@ -6,79 +6,52 @@ import java.util.List;
 
 public class BinPacking {
     public static void main(String[] args) {
-        Reader reader = Reader.getInstance(13);
+        long startTime, endTime;
+        Reader reader = Reader.getInstance(3);
 
-
+// To be modified by the user
         FirstFit firstFit = new FirstFit();
         NextFit nextFit = new NextFit();
-        OneBinOneItem oneBinOneItem = new OneBinOneItem();
         TabuSearch tabuSearch = new TabuSearch(10,1000);
-        SimulatedAnnealing simulatedAnnealing = new SimulatedAnnealing(5, 0.9, 10, 1000);
-        Neighborhood neighborhood = new Neighborhood();
-        List<Bin> Solution = simulatedAnnealing.getBins();
-        System.out.println(Solution.size());
-        Afficheur afficheur = new Afficheur(Solution);
+        SimulatedAnnealing simulatedAnnealing = new SimulatedAnnealing(50, 0.9, 10, 100);
+
+
+
+
+        //Solution FirstFit
+        startTime = System.currentTimeMillis();
+        List<Bin> binsFirstFit = firstFit.getBins();
+        endTime = System.currentTimeMillis();
+        System.out.println("\n First Fit:");
+        System.out.println("Number of bins: " + binsFirstFit.size());
+        System.out.println("Execution time: " + (endTime - startTime) + "ms");
+
+        //Solution NextFit
+        startTime = System.currentTimeMillis();
+        List<Bin> binsNextFit = nextFit.getBins();
+        endTime = System.currentTimeMillis();
+        System.out.println("\n Next Fit:");
+        System.out.println("Number of bins: " + binsNextFit.size());
+        System.out.println("Execution time: " + (endTime - startTime) + "ms");
+
+        //Solution TabuSearch
+        startTime = System.currentTimeMillis();
+        List<Bin> binsTabuSearch = tabuSearch.getBins();
+        endTime = System.currentTimeMillis();
+        System.out.println("\n Tabu Search:");
+        System.out.println("Number of bins: " + binsTabuSearch.size());
+        System.out.println("Execution time: " + (endTime - startTime) + "ms");
+
+        //Solution SimulatedAnnealing
+        startTime = System.currentTimeMillis();
+        List<Bin> binsSimulatedAnnealing = simulatedAnnealing.getBins();
+        endTime = System.currentTimeMillis();
+        System.out.println("\n Simulated Annealing:");
+        System.out.println("Number of bins: " + binsSimulatedAnnealing.size());
+        System.out.println("Execution time: " + (endTime - startTime) + "ms");
+
+        // Print solution
+        //Afficheur afficheur = new Afficheur(binsFirstFit);
     }
 
-    public static List<Item> solutionZero(int datasetNumber) {
-        String zero = "";
-        if(datasetNumber < 10) {
-            zero = "0";
-        }
-
-        List<Item> items = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("Data/binpacking2d-" + zero + datasetNumber + ".bp2d"))) {
-            String line;
-            int lineNumber = 0;
-            while ((line = br.readLine()) != null) {
-                lineNumber++;
-                if(lineNumber == 4) {
-                    String[] itemsString = line.trim().split("\\s+");
-                    int binSize = Integer.parseInt(itemsString[1]);
-                    items.add(new Item(0, binSize, binSize));
-                    System.out.println("Binsize : " + binSize);
-                }
-
-                if(lineNumber >= 8) {
-                    String[] itemsString = line.trim().split("\\s+");
-                    if (itemsString.length >= 3) {
-                        try {
-                            int id = Integer.parseInt(itemsString[0]);
-                            int width = Integer.parseInt(itemsString[1]);
-                            int height = Integer.parseInt(itemsString[2]);
-                            items.add(new Item(id, width, height));
-                            System.out.println("Item " + id + " : " + width + " x " + height);
-                        }
-                        catch (NumberFormatException e) {
-                            System.err.println("Error parsing line " + lineNumber + ": " + e.getMessage());
-                        }
-                    }
-                }
-            }
-        } catch (IOException e) {
-            // Handle the exception
-            e.printStackTrace();
-        }
-        return items;
-    }
-
-    public static void testAffichage() {
-        // Création de quelques bins et items pour l'exemple
-        Bin bin1 = new Bin(100, 200);
-        bin1.addItem(new Item(1, 50, 50));
-        System.out.println(bin1.getItems());
-        bin1.addItem(new Item(1, 80, 80));
-        System.out.println(bin1.getItems());
-
-        Bin bin2 = new Bin(150, 250);
-        bin2.addItem(new Item(1, 100, 100));
-        bin2.addItem(new Item(1, 120, 120));
-
-        List<Bin> bins = new ArrayList<>();
-        bins.add(bin1);
-        bins.add(bin2);
-
-
-        Afficheur afficheur = new Afficheur(bins);
-    }
 }
