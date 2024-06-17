@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Bin {
@@ -59,6 +60,31 @@ public class Bin {
         } else {
             return false;
         }
+    }
+
+    public boolean removeItem(Item item) {
+        boolean isRemoved = this.items.remove(item);
+        if (isRemoved) {
+            reorganizeItems();
+        }
+        return isRemoved;
+    }
+
+    private void reorganizeItems() {
+        List<Item> sortedItems = new ArrayList<>(this.items);
+        this.items.clear();
+
+        // Sort the items by their size
+        sortedItems.sort(Comparator.comparingDouble(Item::getWidth).reversed());
+
+        // Re-add the items to the bin
+        for (Item item : sortedItems) {
+            this.addItem(item);
+        }
+    }
+
+    public void addClonedItem(Item item) {
+        this.items.add(item);
     }
 
     // Getters

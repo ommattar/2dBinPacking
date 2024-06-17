@@ -6,20 +6,18 @@ import java.util.List;
 
 public class BinPacking {
     public static void main(String[] args) {
-        List<Item> data = solutionZero(13);
-        List<Bin> bins = new ArrayList<>();
+        Reader reader = Reader.getInstance(13);
 
-        // Solution ZERO : 1 Bin - 1 Item
-        for(Item item : data) {
-            if(item.getId() != 0) {
-                //Item d'id 0 = taille du bin
-                Bin bin = new Bin(data.get(0).getWidth(), data.get(0).getLength());
-                bin.addItem(item);
-                bins.add(bin);
-            }
-        }
 
-        Afficheur afficheur = new Afficheur(bins);
+        FirstFit firstFit = new FirstFit();
+        NextFit nextFit = new NextFit();
+        OneBinOneItem oneBinOneItem = new OneBinOneItem();
+        TabuSearch tabuSearch = new TabuSearch(10,1000);
+        SimulatedAnnealing simulatedAnnealing = new SimulatedAnnealing(5, 0.9, 10, 1000);
+        Neighborhood neighborhood = new Neighborhood();
+        List<Bin> Solution = simulatedAnnealing.getBins();
+        System.out.println(Solution.size());
+        Afficheur afficheur = new Afficheur(Solution);
     }
 
     public static List<Item> solutionZero(int datasetNumber) {

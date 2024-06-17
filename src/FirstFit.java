@@ -3,13 +3,15 @@ import java.util.List;
 
 public class FirstFit {
     private List<Bin> bins;
+    private Reader reader;
 
     public FirstFit() {
         this.bins = new ArrayList<>();
+        this.reader= Reader.getInstance();
     }
 
-    public void pack(List<Item> items, int binSize) {
-        for (Item item : items) {
+    public void pack() {
+        for (Item item : reader.getItems()) {
             boolean packed = false;
 
             // Try to pack the item in the first bin where it fits
@@ -22,15 +24,15 @@ public class FirstFit {
 
             // If the item doesn't fit in any of the existing bins, create a new bin and pack the item there
             if (!packed) {
-                Bin newBin = new Bin(binSize, binSize);  // Assuming the bin width and height are 250
+                Bin newBin = new Bin(reader.getBinSize(), reader.getBinSize());  // Assuming the bin width and height are 250
                 newBin.addItem(item);
                 bins.add(newBin);
             }
         }
     }
 
-    public List<Bin> getBins(List<Item> items,int binSize) {
-        pack(items, binSize);
+    public List<Bin> getBins() {
+        pack();
         return bins;
     }
 }
